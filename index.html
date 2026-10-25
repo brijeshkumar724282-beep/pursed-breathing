@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Pursed Breathing</title>
+<style>
+:root{--bg:#0f172a;--fg:#f1f5f9;--muted:#94a3b8;--accent:#38bdf8;--card:#1e293b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 32px}
+h1{font-size:1.1rem;margin:6px 0 2px;font-weight:700}
+.sub{color:var(--muted);font-size:.85rem;margin:0 0 18px;text-align:center}
+.stage{width:min(78vw,300px);height:min(78vw,300px);display:grid;place-items:center;position:relative;margin:8px 0}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px solid #334155}
+.circle{width:40%;height:40%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7dd3fc,#0284c7);transition:width .2s linear,height .2s linear;display:grid;place-items:center}
+.circle.inhale{width:92%;height:92%}
+.circle.exhale{width:40%;height:40%}
+.phase{font-size:1.4rem;font-weight:800;text-align:center;min-height:2.2em;margin:14px 0 4px}
+.hint{color:var(--muted);font-size:.9rem;min-height:1.5em;text-align:center;margin-bottom:10px}
+.barwrap{width:min(92vw,360px);height:8px;background:#334155;border-radius:99px;overflow:hidden}
+.bar{height:100%;width:0%;background:var(--accent)}
+.stats{display:flex;gap:16px;margin:14px 0;color:var(--muted);font-size:.9rem}
+.stats b{color:var(--fg)}
+.btnrow{display:flex;gap:12px;margin-top:8px;width:min(92vw,360px)}
+button{flex:1;padding:16px;border-radius:16px;border:0;font-size:1.05rem;font-weight:700;cursor:pointer}
+#start{background:#38bdf8;color:#082f49}
+#start.stop{background:#f87171;color:#450a0a}
+.toggles{display:flex;gap:16px;margin-top:16px;font-size:.9rem;color:var(--muted)}
+.toggles label{display:flex;gap:8px;align-items:center}
+input[type=checkbox]{width:22px;height:22px}
+</style>
+</head>
+<body>
+<h1>Pursed Breathing</h1>
+<p class="sub">Automatic loop &bull; no counting needed<br>2s in through nose &bull; 4s out through pursed lips</p>
+<div class="stage"><div class="ring"></div><div class="circle" id="circle"></div></div>
+<div class="phase" id="phase">Tap Start</div>
+<div class="hint" id="hint">Follow circle, sound + buzz</div>
+<div class="barwrap"><div class="bar" id="bar"></div></div>
+<div class="stats"><span>Cycles <b id="cycles">0</b></span><span>Time <b id="time">0:00</b></span></div>
+<div class="btnrow"><button id="start">Start</button></div>
+<div class="toggles">
+<label><input type="checkbox" id="sound" checked> Sound</label>
+<label><input type="checkbox" id="buzz" checked> Buzz</label>
+</div>
+<script>
+const INHALE=2000, EXHALE=4000;
+let running=false, raf=0, phaseStart=0, phaseLen=0, phase='idle', cycles=0, startTime=0, timerInt=0;
+const circle=document.getElementById('circle'), phaseEl=document.getElementById('phase'),
+hint=document.getElementById('hint'), bar=document.getElementById('bar'),
+btn=document.getElementById('start'), cEl=document.getElementById('cycles'), tEl=document.getElementById('time');
+let actx=null;
+function beep(f){ if(!document.getElementById('sound').checked) return;
+ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+ const o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=f; o.type='sine';
+ g.gain.setValueAtTime(.18,actx.currentTime); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.35);
+ o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+.35);}catch(e){} }
+function buzz(p){ if(!document.getElementById('buzz').checked) return;
+ if(navigator.vibrate) navigator.vibrate(p); }
+function tick(now){ if(!running) return;
+ const el=now-phaseStart, p=Math.min(el/phaseLen,1); bar.style.width=(p*100)+'%';
+ if(el>=phaseLen) nextPhase(); else raf=requestAnimationFrame(tick); }
+function setPhase(n){ phase=n; phaseStart=performance.now();
+ if(n==='inhale'){ phaseLen=INHALE; circle.className='circle inhale';
+  phaseEl.textContent='Breathe in'; hint.textContent='Nose in… 2s'; beep(660); buzz(60);
+ } else { phaseLen=EXHALE; circle.className='circle exhale';
+  phaseEl.textContent='Breathe out'; hint.textContent='Pursed lips out… 4s'; beep(440); buzz([40,40,40]); }
+ raf=requestAnimationFrame(tick); }
+function nextPhase(){ if(phase==='inhale') setPhase('exhale');
+ else { cycles++; cEl.textContent=cycles; setPhase('inhale'); } }
+function fmt(s){ return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'); }
+btn.onclick=()=>{ if(actx&&actx.state==='suspended') actx.resume();
+ if(!running){ running=true; cycles=0; cEl.textContent='0'; startTime=Date.now();
+  btn.textContent='Stop'; btn.classList.add('stop'); setPhase('inhale');
+  timerInt=setInterval(()=>tEl.textContent=fmt((Date.now()-startTime)/1000),500);
+ } else { running=false; cancelAnimationFrame(raf); clearInterval(timerInt);
+  btn.textContent='Start'; btn.classList.remove('stop');
+  phaseEl.textContent='Paused'; hint.textContent='Tap Start to restart'; bar.style.width='0%';
+  circle.className='circle'; } };
+</script>
+</body>
+</html>
