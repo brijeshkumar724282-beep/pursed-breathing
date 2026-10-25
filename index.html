@@ -3,84 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
-<title>Pursed Breathing</title>
+<meta name="theme-color" content="#171310">
+<title>Breathe — Bedside Lantern</title>
 <style>
-:root{--bg:#0f172a;--fg:#f1f5f9;--muted:#94a3b8;--accent:#38bdf8;--card:#1e293b;--line:#334155}
-[data-theme="light"]{--bg:#f8fafc;--fg:#0f172a;--muted:#475569;--accent:#0284c7;--card:#fff;--line:#cbd5e1}
-[data-theme="contrast"]{--bg:#000;--fg:#fff;--muted:#e5e5e5;--accent:#facc15;--card:#111;--line:#fff}
+:root{--bg:#171310;--fg:#FFF6EC;--muted:#CDBFAE;--accent:#FFB67A;--accent-ink:#241105;--card:#221C17;--line:#4A3F34;--orb-from:#FFE3C2;--orb-to:#E96E2C;--track:#3A3129;--stop:#FF7A7A;--stop-ink:#2B0707;--radius:18px;--tap:56px}
+body[data-theme="light"]{--bg:#FFFBF3;--fg:#221A12;--muted:#6B5D4D;--accent:#9A3B0E;--accent-ink:#fff;--card:#fff;--line:#E3D5C0;--orb-from:#FFD9B3;--orb-to:#C24A0A;--track:#EDE1CF;--stop:#B91C1C;--stop-ink:#fff}
+body[data-theme="contrast"]{--bg:#000;--fg:#fff;--muted:#E8E8E8;--accent:#FFD60A;--accent-ink:#000;--card:#0A0A0A;--line:#fff;--orb-from:#fff;--orb-to:#FFD60A;--track:#2A2A2A;--stop:#fff;--stop-ink:#000}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-::selection{background:var(--accent);color:#000}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 32px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 32px}
 body.large{font-size:118%}
-h1{font-size:1.1rem;margin:6px 0 2px;font-weight:700}
-.sub{color:var(--muted);font-size:.85rem;margin:0 0 14px;text-align:center}
-.stage{width:min(78vw,300px);height:min(78vw,300px);display:grid;place-items:center;position:relative;margin:8px 0}
-.ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--line)}
-.circle{width:40%;height:40%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7dd3fc,#0284c7);display:grid;place-items:center}
-.circle.anim{transition-property:width,height;transition-timing-function:ease-in-out}
-.circle.inhale,.circle.hold-full{width:92%;height:92%}
-.circle.exhale,.circle.hold-empty{width:40%;height:40%}
-@media (prefers-reduced-motion:reduce){.circle.anim{transition:none}}
-.phase{font-size:1.4rem;font-weight:800;text-align:center;min-height:2.2em;margin:14px 0 4px}
-body.large .phase{font-size:1.8rem}
-.hint{color:var(--muted);font-size:.9rem;min-height:1.5em;text-align:center;margin-bottom:10px}
-.barwrap{width:min(92vw,360px);height:8px;background:var(--line);border-radius:99px;overflow:hidden}
-.bar{height:100%;width:0%;background:var(--accent)}
-.sessbar{width:min(92vw,360px);height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}
-.sessbar>div{height:100%;width:0%;background:var(--muted)}
-.stats{display:flex;gap:16px;margin:14px 0 4px;color:var(--muted);font-size:.9rem;flex-wrap:wrap;justify-content:center}
+.wrap{width:min(94vw,400px);display:flex;flex-direction:column;align-items:stretch}
+header{text-align:center;margin:4px 0 2px}
+header h1{font-size:1.25rem;margin:0;font-weight:800;letter-spacing:.01em}
+.patternline{color:var(--muted);font-size:.9rem;margin:6px 0 0;min-height:1.4em}
+.stage{width:280px;height:280px;max-width:78vw;max-height:78vw;display:grid;place-items:center;position:relative;margin:14px auto 4px}
+.glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 52%,var(--track) 78%,transparent 82%);filter:blur(2px)}
+.orb{width:40%;height:40%;border-radius:50%;background:radial-gradient(circle at 32% 30%,var(--orb-from),var(--orb-to) 72%);box-shadow:0 0 60px 8px color-mix(in srgb,var(--orb-to) 35%,transparent);transition-property:width,height,box-shadow,opacity;transition-timing-function:cubic-bezier(.22,1,.36,1);position:relative}
+.orb.inhale,.orb.hold-full{width:92%;height:92%}
+.orb.exhale,.orb.hold-empty{width:40%;height:40%}
+.orb.hold-full{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 60px 8px color-mix(in srgb,var(--orb-to) 35%,transparent)}50%{box-shadow:0 0 90px 18px color-mix(in srgb,var(--orb-to) 50%,transparent)}}
+.phase{font-size:34px;font-weight:800;text-align:center;min-height:1.6em;margin:12px 0 2px;line-height:1.15}
+body.large .phase{font-size:42px}
+.hint{color:var(--muted);font-size:15px;min-height:1.5em;text-align:center;margin:0 0 10px}
+.pbar{height:10px;background:var(--track);border-radius:99px;overflow:hidden}
+.pbar>div{height:100%;width:0%;background:var(--accent)}
+.sbar{height:6px;background:var(--track);border-radius:99px;overflow:hidden;margin-top:6px}
+.sbar>div{height:100%;width:0%;background:var(--muted)}
+.stats{display:flex;gap:14px;margin:14px 0 4px;color:var(--muted);font-size:.9rem;flex-wrap:wrap;justify-content:center}
 .stats b{color:var(--fg);font-variant-numeric:tabular-nums}
-.panel{width:min(92vw,360px);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
-.panel h2{font-size:.8rem;margin:0 0 8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+button.action{width:100%;padding:16px;min-height:56px;border-radius:var(--radius);border:0;font-size:1.05rem;font-weight:800;cursor:pointer;margin-top:12px;background:var(--accent);color:var(--accent-ink)}
+button.action.stop{background:var(--stop);color:var(--stop-ink)}
+details.panel{width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:6px 12px;margin-top:12px}
+details.panel summary{cursor:pointer;min-height:var(--tap);display:flex;align-items:center;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);list-style:none}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel .inner{padding:2px 0 12px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
-.chip{flex:1;min-width:56px;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:700;font-size:.9rem;cursor:pointer}
-.chip.on{background:var(--accent);color:#082f49;border-color:var(--accent)}
-[data-theme="contrast"] .chip.on{color:#000}
+.chip{flex:1;min-width:56px;min-height:44px;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:700;font-size:.9rem;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+select{width:100%;min-height:var(--tap);padding:10px;border-radius:12px;background:var(--bg);color:var(--fg);border:1px solid var(--line);font-size:.95rem}
 select,input[type=range]{accent-color:var(--accent)}
-select{width:100%;padding:10px;border-radius:10px;background:var(--bg);color:var(--fg);border:1px solid var(--line);font-size:.95rem}
 .custom{display:none;gap:8px;margin-top:8px}
 .custom.show{display:flex}
 .custom label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:.75rem;color:var(--muted)}
-.custom input{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:1rem;width:100%}
-.btnrow{display:flex;gap:12px;margin-top:12px;width:min(92vw,360px)}
-button.action{flex:1;padding:16px;min-height:56px;border-radius:16px;border:0;font-size:1.05rem;font-weight:700;cursor:pointer}
-#start{background:var(--accent);color:#082f49}
-[data-theme="contrast"] #start{color:#000}
-#start.stop{background:#f87171;color:#450a0a}
-.toggles{display:flex;gap:16px;margin-top:12px;font-size:.9rem;color:var(--muted);flex-wrap:wrap;justify-content:center}
+.custom input{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:1rem;width:100%;min-height:44px}
+.toggles{display:flex;gap:16px;margin-top:12px;font-size:.9rem;color:var(--muted);flex-wrap:wrap;align-items:center}
 .toggles label{display:flex;gap:8px;align-items:center;min-height:44px}
 input[type=checkbox]{width:22px;height:22px}
 .hist{font-size:.85rem;color:var(--muted);margin:6px 0 0;padding:0;list-style:none}
-.hist li{padding:6px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between}
+.hist li{padding:6px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+footer{color:var(--muted);font-size:.85rem;text-align:center;margin:18px 0 0}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.orb{transition:none}.orb.inhale,.orb.hold-full{opacity:1}.orb.exhale,.orb.hold-empty{opacity:.55}.orb.hold-full{animation:none}}
 </style>
 </head>
 <body>
-<h1>Pursed Breathing</h1>
-<p class="sub" id="sub">Automatic loop &bull; no counting needed<br>2s in through nose &bull; 4s out through pursed lips</p>
-<div class="stage" aria-hidden="true"><div class="ring"></div><div class="circle anim" id="circle"></div></div>
+<div class="wrap">
+<header>
+<h1>Breathe</h1>
+<p class="patternline" id="sub">2s in through nose &bull; 4s out through pursed lips</p>
+</header>
+<div class="stage" aria-hidden="true"><div class="glow"></div><div class="orb" id="orb"></div></div>
 <div class="phase" id="phase" role="status" aria-live="polite">Tap Start</div>
-<div class="hint" id="hint">Follow circle, sound + buzz</div>
-<div class="barwrap"><div class="bar" id="bar"></div></div>
-<div class="sessbar"><div id="sessbar"></div></div>
+<div class="hint" id="hint">Follow the light</div>
+<div class="pbar" role="progressbar" aria-label="Phase progress"><div id="bar"></div></div>
+<div class="sbar" role="progressbar" aria-label="Session progress"><div id="sessbar"></div></div>
 <div class="stats"><span>Cycles <b id="cycles">0</b></span><span>Time <b id="time">0:00</b></span><span>Streak <b id="streak">0d</b></span><span>Total <b id="total">0m</b></span></div>
-<div class="btnrow"><button class="action" id="start">Start</button></div>
+<button class="action" id="start">Start</button>
 
-<div class="panel"><h2>Pattern</h2><div class="row" id="patterns">
-<button class="chip on" data-p="pursed">2–4 Pursed</button><button class="chip" data-p="calm">4–6 Calm</button><button class="chip" data-p="box">Box 4-4</button><button class="chip" data-p="478">4-7-8</button><button class="chip" data-p="custom">Custom</button>
+<details class="panel" open><summary>Pattern</summary><div class="inner">
+<div class="row" id="patterns">
+<button class="chip on" data-p="pursed">2–4 Pursed</button><button class="chip" data-p="calm">4–6 Calm</button><button class="chip" data-p="box">Box</button><button class="chip" data-p="478">4-7-8</button><button class="chip" data-p="custom">Custom</button>
 </div><div class="custom" id="custom">
 <label>Inhale s<input type="number" id="cIn" min="2" max="12" step="1" value="4"></label>
 <label>Hold s<input type="number" id="cHold" min="0" max="12" step="1" value="2"></label>
 <label>Exhale s<input type="number" id="cOut" min="2" max="12" step="1" value="6"></label>
 <label>Rest s<input type="number" id="cRest" min="0" max="12" step="1" value="0"></label>
-</div></div>
+</div></div></details>
 
-<div class="panel"><h2>Session length</h2><div class="row" id="lengths">
-<button class="chip" data-min="1">1m</button><button class="chip on" data-min="3">3m</button><button class="chip" data-min="5">5m</button><button class="chip" data-min="10">10m</button><button class="chip" data-min="0">∞</button>
-</div></div>
+<details class="panel"><summary>Session</summary><div class="inner">
+<div class="row" id="lengths">
+<button class="chip" data-min="1">1m</button><button class="chip on" data-min="3">3m</button><button class="chip" data-min="5">5m</button><button class="chip" data-min="10">10m</button><button class="chip" data-min="0">&infin;</button>
+</div></div></details>
 
-<div class="panel"><h2>Sound</h2>
+<details class="panel"><summary>Sound</summary><div class="inner">
 <select id="soundmode" aria-label="Sound mode">
 <option value="soft" selected>Soft beeps</option>
 <option value="chime">Chime</option>
@@ -91,27 +97,31 @@ input[type=checkbox]{width:22px;height:22px}
 <label>Vol <input type="range" id="vol" min="0" max="100" value="70" style="width:110px"></label>
 <label><input type="checkbox" id="buzz" checked> Buzz</label>
 <label><input type="checkbox" id="tick"> Tick</label>
-</div></div>
+</div></div></details>
 
-<div class="panel"><h2>Look</h2><div class="row">
+<details class="panel"><summary>Look</summary><div class="inner">
+<div class="row">
 <button class="chip on" data-th="dark">Dark</button><button class="chip" data-th="light">Light</button><button class="chip" data-th="contrast">Contrast</button>
-</div><div class="toggles"><label><input type="checkbox" id="bigtext"> Large text</label></div></div>
+</div><div class="toggles"><label><input type="checkbox" id="bigtext"> Large text</label></div></div></details>
 
-<div class="panel"><h2>History (last 7)</h2><ul class="hist" id="hist"></ul><div class="toggles"><button class="chip" id="clear">Clear</button></div></div>
+<details class="panel"><summary>History</summary><div class="inner">
+<ul class="hist" id="hist"></ul><div class="toggles"><button class="chip" id="clear">Clear</button></div></div></details>
 
+<footer>Sound + buzz guide you. No counting.</footer>
+</div>
 <script>
 const PATTERNS={
- pursed:{name:'Pursed 2–4',desc:'2s in through nose • 4s out through pursed lips',steps:[['inhale',2],['exhale',4]]},
- calm:{name:'Calm 4–6',desc:'4s in • 6s out, slow exhale',steps:[['inhale',4],['exhale',6]]},
- box:{name:'Box 4-4-4-4',desc:'4s in • 4s hold • 4s out • 4s rest',steps:[['inhale',4],['hold-full',4],['exhale',4],['hold-empty',4]]},
- '478':{name:'4-7-8',desc:'4s in • 7s hold • 8s out',steps:[['inhale',4],['hold-full',7],['exhale',8]]},
+ pursed:{name:'Pursed 2-4',desc:'2s in through nose \u2022 4s out through pursed lips',steps:[['inhale',2],['exhale',4]]},
+ calm:{name:'Calm 4-6',desc:'4s in \u2022 6s out, slow exhale',steps:[['inhale',4],['exhale',6]]},
+ box:{name:'Box 4-4-4-4',desc:'4s in \u2022 4s hold \u2022 4s out \u2022 4s rest',steps:[['inhale',4],['hold-full',4],['exhale',4],['hold-empty',4]]},
+ '478':{name:'4-7-8',desc:'4s in \u2022 7s hold \u2022 8s out',steps:[['inhale',4],['hold-full',7],['exhale',8]]},
  custom:{name:'Custom',desc:'Your own seconds',steps:null}};
 let running=false,raf=0,phaseStart=0,phaseLen=2000,phaseIdx=0,phases=PATTERNS.pursed.steps,cycles=0,startTime=0,timerInt=0,sessMin=3,tickInt=0;
 const $=id=>document.getElementById(id);
-const circle=$('circle'),phaseEl=$('phase'),hint=$('hint'),bar=$('bar'),sessbar=$('sessbar'),sub=$('sub'),
+const orb=$('orb'),phaseEl=$('phase'),hint=$('hint'),bar=$('bar'),sessbar=$('sessbar'),sub=$('sub'),
 btn=$('start'),cEl=$('cycles'),tEl=$('time'),streakEl=$('streak'),totalEl=$('total'),histEl=$('hist');
 let actx=null;
-const store={load(){try{return JSON.parse(localStorage.getItem('pb_v2'))||{}}catch(e){return{}}},save(d){localStorage.setItem('pb_v2',JSON.stringify(d))}};
+const store={load(){try{return JSON.parse(localStorage.getItem('pb_v2'))||{}}catch(e){return{}}},save(d){try{localStorage.setItem('pb_v2',JSON.stringify(d))}catch(e){}}};
 let prefs=Object.assign({theme:'dark',big:false,mode:'soft',vol:70,buzz:true,tick:false,len:3,pat:'pursed',cIn:4,cHold:2,cOut:6,cRest:0},store.load());
 function getPhases(){if(prefs.pat!=='custom')return PATTERNS[prefs.pat].steps.slice();
  const g=v=>Math.min(12,Math.max(0,+v||0));const s=[];
@@ -121,17 +131,19 @@ function getPhases(){if(prefs.pat!=='custom')return PATTERNS[prefs.pat].steps.sl
  if(g(prefs.cRest)>0)s.push(['hold-empty',g(prefs.cRest)]);return s;}
 function applyPrefs(){document.body.dataset.theme=prefs.theme==='dark'?'':prefs.theme;
  document.body.classList.toggle('large',!!prefs.big);
- $('soundmode').value=prefs.mode;$('vol').value=prefs.vol;$('buzz').checked=prefs.buzz;$('tick').checked=prefs.tick;
+ $('soundmode').value=prefs.mode;$('vol').value=prefs.vol;$('buzz').checked=prefs.buzz;$('tick').checked=prefs.tick;$('bigtext').checked=!!prefs.big;
  $('cIn').value=prefs.cIn;$('cHold').value=prefs.cHold;$('cOut').value=prefs.cOut;$('cRest').value=prefs.cRest;
  $('custom').classList.toggle('show',prefs.pat==='custom');
- document.querySelectorAll('#patterns .chip').forEach(c=>c.classList.toggle('on',c.dataset.p===prefs.pat));
- document.querySelectorAll('#lengths .chip').forEach(c=>c.classList.toggle('on',+c.dataset.min===prefs.len));
- document.querySelectorAll('[data-th]').forEach(c=>c.classList.toggle('on',c.dataset.th===(prefs.theme||'dark')));
- sessMin=prefs.len;phases=getPhases();sub.innerHTML='Automatic loop • no counting needed<br>'+patternDesc();renderStats();}
-function patternDesc(){if(prefs.pat==='custom'){const p=getPhases();return p.map(([k,s])=>`${s}s ${k.replace('hold-full','hold').replace('hold-empty','rest')}`).join(' • ');}return PATTERNS[prefs.pat].desc;}
+ document.querySelectorAll('#patterns .chip').forEach(c=>{const on=c.dataset.p===prefs.pat;c.classList.toggle('on',on);c.setAttribute('aria-pressed',on)});
+ document.querySelectorAll('#lengths .chip').forEach(c=>{const on=+c.dataset.min===prefs.len;c.classList.toggle('on',on);c.setAttribute('aria-pressed',on)});
+ document.querySelectorAll('[data-th]').forEach(c=>{const on=c.dataset.th===(prefs.theme||'dark');c.classList.toggle('on',on);c.setAttribute('aria-pressed',on)});
+ sessMin=prefs.len;phases=getPhases();sub.textContent=patternDesc();renderStats();}
+function patternDesc(){if(prefs.pat==='custom'){const p=getPhases();return p.map(([k,s])=>`${s}s ${k.replace('hold-full','hold').replace('hold-empty','rest')}`).join(' \u2022 ');}return PATTERNS[prefs.pat].desc;}
 function persist(){store.save(prefs)}
 function renderStats(){const d=store.load();streakEl.textContent=(d.streak||0)+'d';totalEl.textContent=Math.round((d.minutes||0))+'m';
- const h=d.hist||[];histEl.innerHTML=h.length?h.map(x=>`<li><span>${x.d} · ${x.p||''}</span><span>${x.m}m · ${x.c} cycles</span></li>`).join(''):'<li><span>No sessions yet</span><span>—</span></li>';}
+ const h=d.hist||[];histEl.textContent='';
+ if(!h.length){const li=document.createElement('li');li.textContent='No sessions yet';histEl.appendChild(li);return;}
+ h.forEach(x=>{const li=document.createElement('li');const a=document.createElement('span');a.textContent=(x.d||'')+' · '+(x.p||'');const b=document.createElement('span');b.textContent=(x.m||0)+'m · '+(x.c||0)+' cycles';li.append(a,b);histEl.appendChild(li);});}
 function tone(f,t,dur){const v=prefs.vol/100;if(prefs.mode==='off'||v<=0)return;
  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();
  const o=actx.createOscillator(),g=actx.createGain();o.type=t;o.frequency.value=f;
@@ -146,12 +158,12 @@ function buzzP(p){if(!$('buzz').checked)return;if(navigator.vibrate)navigator.vi
 function tick(now){if(!running)return;const el=now-phaseStart,p=Math.min(el/phaseLen,1);bar.style.width=(p*100)+'%';
  const total=sessMin*60000,se=Date.now()-startTime;if(sessMin>0){sessbar.style.width=Math.min(se/total*100,100)+'%';if(se>=total){finish(true);return;}}
  if(el>=phaseLen)nextPhase();else raf=requestAnimationFrame(tick);}
-const LABEL={inhale:['Breathe in','Nose in… follow circle'],'hold-full':['Hold','Hold… stay full'],'exhale':['Breathe out','Pursed lips out… slow'],'hold-empty':['Rest','Rest… stay empty']};
+const LABEL={inhale:['Breathe in','Nose in, follow the light'],'hold-full':['Hold','Hold, stay full'],'exhale':['Breathe out','Pursed lips out, slow'],'hold-empty':['Rest','Rest, stay empty']};
 function setPhase(i){phaseIdx=i;const [kind,sec]=phases[i];phaseLen=sec*1000;phaseStart=performance.now();
- circle.style.transitionDuration=phaseLen+'ms';circle.className='circle anim '+kind;
- phaseEl.textContent=LABEL[kind][0];hint.textContent=`${LABEL[kind][1]} • ${sec}s`;cue(kind);
+ orb.style.transitionDuration=phaseLen+'ms';orb.className='orb '+kind;
+ phaseEl.textContent=LABEL[kind][0];hint.textContent=`${LABEL[kind][1]} \u2022 ${sec}s`;cue(kind);
  cancelAnimationFrame(raf);raf=requestAnimationFrame(tick);
- if(prefs.tick){clearInterval(tickInt);tickInt=setInterval(()=>tone(990,'sine',.08),1000);}}
+ if(prefs.tick){clearInterval(tickInt);tickInt=setInterval(()=>tone(990,'sine',.08),1000);}else{clearInterval(tickInt);}}
 function nextPhase(){const n=(phaseIdx+1)%phases.length;if(n===0){cycles++;cEl.textContent=cycles;}setPhase(n);}
 function fmt(s){return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
 function record(mins){const d=store.load();d.sessions=(d.sessions||0)+1;d.minutes=(d.minutes||0)+mins;
@@ -159,17 +171,17 @@ function record(mins){const d=store.load();d.sessions=(d.sessions||0)+1;d.minute
  d.hist=[{d:new Date().toLocaleDateString(),m:Math.round(mins*10)/10,c:cycles,p:(PATTERNS[prefs.pat]||{}).name||prefs.pat}].concat(d.hist||[]).slice(0,7);store.save(Object.assign(d,prefs));renderStats();}
 function finish(auto){const mins=(Date.now()-startTime)/60000;if(mins>=0.2)record(mins);
  running=false;cancelAnimationFrame(raf);clearInterval(timerInt);clearInterval(tickInt);
- btn.textContent='Start';btn.classList.remove('stop');circle.className='circle anim';circle.style.transitionDuration='';
+ btn.textContent='Start';btn.classList.remove('stop');orb.className='orb';orb.style.transitionDuration='';
  bar.style.width='0%';sessbar.style.width=auto?'100%':'0%';
- phaseEl.textContent=auto?'Done — nice work':'Paused';hint.textContent=auto?`${cycles} cycles in ${fmt(mins*60)}`:'Tap Start to restart';}
+ phaseEl.textContent=auto?'Done — nice work':'Stopped';hint.textContent=auto?`${cycles} cycles in ${fmt(mins*60)}`:'Tap Start to restart';}
 btn.onclick=()=>{if(!running){phases=getPhases();running=true;cycles=0;cEl.textContent='0';tEl.textContent='0:00';startTime=Date.now();
   btn.textContent='Stop';btn.classList.add('stop');setPhase(0);
   timerInt=setInterval(()=>tEl.textContent=fmt((Date.now()-startTime)/1000),500);}
  else finish(false);};
-document.querySelectorAll('#patterns .chip').forEach(c=>c.onclick=()=>{prefs.pat=c.dataset.p;persist();applyPrefs();});
-['cIn','cHold','cOut','cRest'].forEach(id=>$(id).oninput=e=>{prefs[id]=+e.target.value;persist();phases=getPhases();sub.innerHTML='Automatic loop • no counting needed<br>'+patternDesc();});
-document.querySelectorAll('#lengths .chip').forEach(c=>c.onclick=()=>{prefs.len=+c.dataset.min;sessMin=prefs.len;persist();applyPrefs();});
-document.querySelectorAll('[data-th]').forEach(c=>c.onclick=()=>{prefs.theme=c.dataset.th==='dark'?'dark':c.dataset.th;persist();applyPrefs();});
+document.querySelectorAll('#patterns .chip').forEach(c=>c.onclick=()=>{if(running)return;prefs.pat=c.dataset.p;persist();applyPrefs();});
+['cIn','cHold','cOut','cRest'].forEach(id=>$(id).oninput=e=>{if(running)return;prefs[id]=+e.target.value;persist();phases=getPhases();sub.textContent=patternDesc();});
+document.querySelectorAll('#lengths .chip').forEach(c=>c.onclick=()=>{if(running)return;prefs.len=+c.dataset.min;sessMin=prefs.len;persist();applyPrefs();});
+document.querySelectorAll('[data-th]').forEach(c=>c.onclick=()=>{prefs.theme=c.dataset.th;persist();applyPrefs();});
 $('soundmode').onchange=e=>{prefs.mode=e.target.value;persist()};
 $('vol').oninput=e=>{prefs.vol=+e.target.value;persist()};
 $('buzz').onchange=e=>{prefs.buzz=e.target.checked;persist()};
